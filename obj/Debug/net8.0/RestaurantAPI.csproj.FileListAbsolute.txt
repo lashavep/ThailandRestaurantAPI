@@ -342,4 +342,10 @@ E:\dev\APS.NET Core\API\RestaurantAPIBolo\RestaurantAPI\RestaurantAPI\obj\Debug\
 E:\dev\APS.NET Core\API\RestaurantAPIBolo\RestaurantAPI\RestaurantAPI\obj\Debug\net8.0\RestaurantAPI.genruntimeconfig.cache
 E:\dev\APS.NET Core\API\RestaurantAPIBolo\RestaurantAPI\RestaurantAPI\obj\Debug\net8.0\ref\RestaurantAPI.dll
 E:\dev\APS.NET Core\API\RestaurantAPI\RestaurantAPI\bin\Debug\net8.0\Newtonsoft.Json.dll
-E:\dev\APS.NET Core\API\RestaurantAPI\RestaurantAPI\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
+E:\dev\APS.NET Core\API\RestaurantAPI\RestaurantAPI\bin\Debug\net8.0\out\web.config
+E:\dev\APS.NET Core\API\RestaurantAPI\RestaurantAPI\bin\Debug\net8.0\out\appsettings.Development.json
+E:\dev\APS.NET Core\API\RestaurantAPI\RestaurantAPI\bin\Debug\net8.0\out\appsettings.json
+E:\dev\APS.NET Core\API\RestaurantAPI\RestaurantAPI\bin\Debug\net8.0\out\RestaurantAPI.deps.json
+E:\dev\APS.NET Core\API\RestaurantAPI\RestaurantAPI\bin\Debug\net8.0\out\RestaurantAPI.runtimeconfig.json
+E:\dev\APS.NET Core\API\RestaurantAPI\RestaurantAPI\bin\Debug\net8.0\out\RestaurantAPI.staticwebassets.endpoints.json
+E:\dev\APS.NET Core\API\RestaurantAPI\RestaurantAPI\obj\Debug\net8.0\RestaurantAPI.sourcelink.json

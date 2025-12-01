@@ -963,6 +963,13 @@
         ],
         "parameters": [
           {
+            "name": "status",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "name": "page",
             "in": "query",
             "schema": {
@@ -1760,6 +1767,10 @@
             "type": "string",
             "nullable": true
           },
+          "confirmPassword": {
+            "type": "string",
+            "nullable": true
+          },
           "address": {
             "type": "string",
             "nullable": true
@@ -1773,7 +1784,8 @@
             "nullable": true
           },
           "gender": {
-            "$ref": "#/components/schemas/GenderType"
+            "type": "integer",
+            "format": "int32"
           },
           "isSubscribedToPromo": {
             "type": "boolean"

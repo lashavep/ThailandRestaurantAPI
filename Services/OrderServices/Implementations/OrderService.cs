@@ -108,11 +108,19 @@ public class OrderService : IOrderService
         };
     }
 
-    public async Task<object> GetAllOrdersAsync(int page, int pageSize)
+    public async Task<object> GetOrdersByStatusAsync(string status, int page, int pageSize)
     {
-        var query = _db.Orders.Include(o => o.User).OrderByDescending(o => o.Date);
+        var query = _db.Orders.Include(o => o.User).AsQueryable();
+
+        if (!string.IsNullOrEmpty(status))
+            query = query.Where(o => o.Status == status);
+
         var totalCount = await query.CountAsync();
-        var orders = await query.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
+        var orders = await query
+            .OrderByDescending(o => o.Date)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
 
         var result = orders.Select(o => new
         {
@@ -129,4 +137,5 @@ public class OrderService : IOrderService
 
         return new { totalCount, page, pageSize, orders = result };
     }
+
 }

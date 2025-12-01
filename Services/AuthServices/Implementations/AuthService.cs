@@ -31,6 +31,9 @@ namespace RestaurantAPI.Services.AuthServices.Implementations
 
         public async Task<AuthResponseDTO> RegisterAsync(RegisterDTO dto)
         {
+            if (dto.Password != dto.ConfirmPassword)
+                throw new InvalidOperationException("Passwords do not match");
+
             var emailNorm = dto.Email.Trim().ToLowerInvariant();
             var phoneNorm = dto.Phone.Trim();
 
@@ -51,7 +54,7 @@ namespace RestaurantAPI.Services.AuthServices.Implementations
                 Age = dto.Age,
                 Address = dto.Address,
                 Zipcode = dto.Zipcode,
-                Gender = dto.Gender,
+                Gender = (User.GenderType)dto.Gender,
                 IsSubscribedToPromo = dto.IsSubscribedToPromo,
             };
 
@@ -130,13 +133,13 @@ namespace RestaurantAPI.Services.AuthServices.Implementations
 
             var code = new Random().Next(100000, 999999).ToString();
             user.ResetToken = code;
-            user.ResetTokenExpiry = DateTime.UtcNow.AddMinutes(10);
+            user.ResetTokenExpiry = DateTime.UtcNow.AddMinutes(3);
 
             await _db.SaveChangesAsync();
 
             
             await _emailService.SendEmailAsync(user.Email, "Password Reset Code",
-                $"Your password reset code is {code}. It expires in 10 minutes.");
+                $"Your password reset code is {code}. It expires in 3 minutes.");
         }
 
 

@@ -55,11 +55,12 @@ public class OrdersController : ControllerBase
     }
 
     [HttpGet("all")]
-    public async Task<IActionResult> GetAllOrders([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
+    public async Task<IActionResult> GetAllOrders([FromQuery] string status, [FromQuery] int page = 1, [FromQuery] int pageSize = 10)
     {
-        var result = await _orderService.GetAllOrdersAsync(page, pageSize);
+        var result = await _orderService.GetOrdersByStatusAsync(status, page, pageSize);
         return Ok(result);
     }
+
 
     [HttpGet("my")]
     public async Task<IActionResult> GetMyOrders()

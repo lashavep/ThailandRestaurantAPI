@@ -10,7 +10,7 @@ namespace RestaurantAPI.Services.OrderServices.Interfaces
         Task<(bool Success, string Message, Order? Order)> AcceptOrderAsync(int id);
         Task<(bool Success, string Message, Order? Order)> RejectOrderAsync(int id);
         Task<object?> GetOrderDetailsAsync(int id);
-        Task<object> GetAllOrdersAsync(int page, int pageSize);
+        Task<object> GetOrdersByStatusAsync(string status, int page, int pageSize);
     }
 
 }
