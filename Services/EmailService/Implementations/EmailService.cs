@@ -27,10 +27,15 @@ namespace RestaurantAPI.Services.EmailService.Implementations
                 client.Credentials = new NetworkCredential(user, pass);
                 client.EnableSsl = true;
 
-                var mail = new MailMessage(user, to, subject, body);
+                var mail = new MailMessage(user, to, subject, body)
+                {
+                    IsBodyHtml = true   // ✅ აქ ვუთითებთ რომ body არის HTML
+                };
+
                 await client.SendMailAsync(mail);
             }
         }
+
     }
 
 

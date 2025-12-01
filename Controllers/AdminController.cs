@@ -29,13 +29,95 @@ namespace RestaurantAPI.Controllers
         {
             var users = await _userService.GetAllAsync();
 
+
+            string htmlBody = $@"
+<!DOCTYPE html>
+<html lang='ka'>
+<head>
+  <meta charset='utf-8'>
+  <meta name='viewport' content='width=device-width, initial-scale=1'>
+  <style>
+    body {{
+      margin:0;
+      background:#f4f6f9;
+      font-family:'Segoe UI', Arial, sans-serif;
+      color:#333;
+    }}
+    .container {{
+      max-width:640px;
+      margin:40px auto;
+      background:#d2691e;
+      border-radius:12px;
+      overflow:hidden;
+      box-shadow:0 6px 24px rgba(0,0,0,.08);
+    }}
+    .header {{
+      background:#111827;
+      color:#d2691e;
+      padding:20px;
+      font-size:20px;
+      font-weight:600;
+      text-align:center;
+    }}
+    .content {{
+      padding:24px;
+      line-height:1.6;
+    }}
+    .content h2 {{
+      color:#111827;
+      margin-top:0;
+    }}
+    .content p {{
+      color:#374151;
+      font-size:15px;
+    }}
+    .btn {{
+      display:inline-block;
+      margin-top:20px;
+      background:#d2691e;
+      color:#fff;
+      padding:12px 20px;
+      border-radius:8px;
+      text-decoration:none;
+      font-weight:500;
+    }}
+    .footer {{
+      background:#f9fafb;
+      color:#6b7280;
+      font-size:12px;
+      padding:16px;
+      text-align:center;
+      border-top:1px solid #e5e7eb;
+    }}
+  </style>
+</head>
+<body>
+  <div class='container'>
+    <div class='header'>RiverSide Food Lab</div>
+    <div class='content'>
+      <h2>{dto.Subject}</h2>
+      <p>{dto.Body}</p>
+      <a href='http://localhost:4200/' class='btn'>Go to website
+</a>
+    </div>
+    <div class='footer'>
+      This message was sent from our service.<br/>
+If you do not wish to receive promotional emails, you can unsubscribe from your profile.
+
+    </div>
+  </div>
+</body>
+</html>";
+
+
             foreach (var user in users.Where(u => u.IsSubscribedToPromo))
             {
-                await _emailService.SendEmailAsync(user.Email, dto.Subject, dto.Body);
+                await _emailService.SendEmailAsync(user.Email, dto.Subject, htmlBody);
             }
 
             return Ok(new { message = "Promo emails sent successfully" });
         }
+
 
         [AllowAnonymous]
         [HttpPost("Send")]

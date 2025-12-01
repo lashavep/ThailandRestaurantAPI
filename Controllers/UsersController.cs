@@ -64,6 +64,7 @@ namespace RestaurantAPI.Controllers
                 user.Gender,
                 user.Address,
                 user.Zipcode,
+                user.IsSubscribedToPromo
             });
         }
 

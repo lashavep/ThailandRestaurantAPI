@@ -349,3 +349,4 @@ E:\dev\APS.NET Core\API\RestaurantAPI\RestaurantAPI\bin\Debug\net8.0\out\Restaur
 E:\dev\APS.NET Core\API\RestaurantAPI\RestaurantAPI\bin\Debug\net8.0\out\RestaurantAPI.runtimeconfig.json
 E:\dev\APS.NET Core\API\RestaurantAPI\RestaurantAPI\bin\Debug\net8.0\out\RestaurantAPI.staticwebassets.endpoints.json
 E:\dev\APS.NET Core\API\RestaurantAPI\RestaurantAPI\obj\Debug\net8.0\RestaurantAPI.sourcelink.json
+E:\dev\APS.NET Core\API\RestaurantAPI\RestaurantAPI\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
