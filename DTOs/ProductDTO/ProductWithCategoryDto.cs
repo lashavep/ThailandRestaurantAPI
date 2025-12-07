@@ -1,6 +1,6 @@
 ﻿namespace RestaurantAPI.DTOs.ProductDTO
 {
-    public class ProductWithCategoryDto
+    public class ProductWithCategoryDto                                     // DTO პროდუქტისთვის კატეგორიით
     {
         public int Id { get; set; }
         public string Name { get; set; } = string.Empty;

@@ -20,12 +20,12 @@ public class OrderService : IOrderService
         _emailService = emailService;
     }
 
-    public async Task<Order> PlaceOrderAsync(CreateOrderDTO dto, int userId)
+    public async Task<Order> PlaceOrderAsync(CreateOrderDTO dto, int userId)                            // შეკვეთის განთავსება
     {
-        var user = await _db.Users.FirstOrDefaultAsync(u => u.Id == userId);
+        var user = await _db.Users.FirstOrDefaultAsync(u => u.Id == userId);                            // მომხმარებლის მიღება ID-ის მიხედვით
         if (user == null) throw new Exception("User not found");
 
-        var order = new Order
+        var order = new Order                                                                           // შეკვეთის ახალი ობიექტის შექმნა
         {
             UserId = userId,
             ItemsJson = JsonConvert.SerializeObject(dto.Items ?? new List<OrderItemDTO>()),
@@ -34,15 +34,15 @@ public class OrderService : IOrderService
             Date = DateTime.Now,
             Status = "Pending"
         };
-
-        return await _orderRepo.AddAsync(order);
+            
+        return await _orderRepo.AddAsync(order);        
     }
 
-    public async Task<IEnumerable<OrderResponseDTO>> GetOrdersByUserAsync(int userId)
+    public async Task<IEnumerable<OrderResponseDTO>> GetOrdersByUserAsync(int userId)                   //  შეკვეთების მიღება მომხმარებლების მიხედვით
     {
-        var orders = await _orderRepo.GetByUserIdAsync(userId);
+        var orders = await _orderRepo.GetByUserIdAsync(userId);                                         // მომხმარებლის მიერ განთავსებული შეკვეთების მიღება
 
-        return orders.Select(o => new OrderResponseDTO
+        return orders.Select(o => new OrderResponseDTO                                                  // DTO-ში გადამყვანი მეთოდის გამოყენება
         {
             Id = o.Id,
             UserName = o.User?.FirstName ?? "",
@@ -51,16 +51,16 @@ public class OrderService : IOrderService
             Date = o.Date,
             Items = string.IsNullOrEmpty(o.ItemsJson)
                 ? new List<OrderItemDTO>()
-                : JsonConvert.DeserializeObject<List<OrderItemDTO>>(o.ItemsJson)!
+                : JsonConvert.DeserializeObject<List<OrderItemDTO>>(o.ItemsJson)!                       // შეკვეთის ნივთების დესერალიზაცია JSON-დან
         });
     }
 
-    public async Task<(bool Success, string Message, Order? Order)> AcceptOrderAsync(int id)
+    public async Task<(bool Success, string Message, Order? Order)> AcceptOrderAsync(int id)            // შეკვეთის დადასტურება
     {
-        var order = await _db.Orders.Include(o => o.User).FirstOrDefaultAsync(o => o.Id == id);
+        var order = await _db.Orders.Include(o => o.User).FirstOrDefaultAsync(o => o.Id == id);         // შეკვეთის მიღება იუზერის ID-ის მიხედვით
         if (order == null) return (false, "Order not found", null);
 
-        order.Status = "Complete";
+        order.Status = "Complete";                                                                      // სტატუსის განახლება "Complete"-ზე
         await _db.SaveChangesAsync();
 
         string deliveryMessage = DateTime.Now.Hour < 12
@@ -73,9 +73,9 @@ public class OrderService : IOrderService
         return (true, "Order accepted, email sent", order);
     }
 
-    public async Task<(bool Success, string Message, Order? Order)> RejectOrderAsync(int id)
+    public async Task<(bool Success, string Message, Order? Order)> RejectOrderAsync(int id)             // შეკვეთის უარყოფა
     {
-        var order = await _db.Orders.Include(o => o.User).FirstOrDefaultAsync(o => o.Id == id);
+        var order = await _db.Orders.Include(o => o.User).FirstOrDefaultAsync(o => o.Id == id);         // შეკვეთის მიღება იუზერის ID-ის მიხედვით
         if (order == null) return (false, "Order not found", null);
 
         order.Status = "Rejected";
@@ -87,16 +87,16 @@ public class OrderService : IOrderService
         return (true, "Order rejected, email sent", order);
     }
 
-    public async Task<object?> GetOrderDetailsAsync(int id)
+    public async Task<object?> GetOrderDetailsAsync(int id)                                             // შეკვეთის დეტალების მიღება იუზერის ID-ის მიხედვით
     {
-        var order = await _db.Orders.Include(o => o.User).FirstOrDefaultAsync(o => o.Id == id);
+        var order = await _db.Orders.Include(o => o.User).FirstOrDefaultAsync(o => o.Id == id);         
         if (order == null) return null;
 
         var products = string.IsNullOrEmpty(order.ItemsJson)
             ? new List<OrderItemDTO>()
-            : JsonConvert.DeserializeObject<List<OrderItemDTO>>(order.ItemsJson)!;
+            : JsonConvert.DeserializeObject<List<OrderItemDTO>>(order.ItemsJson)!; 
 
-        return new
+        return new                                                                                      // შეკვეთის დეტალების ობიექტის შექმნა
         {
             order.Id,
             User = new { order.User.Id, order.User.FirstName, order.User.Email },
@@ -108,21 +108,21 @@ public class OrderService : IOrderService
         };
     }
 
-    public async Task<object> GetOrdersByStatusAsync(string status, int page, int pageSize)
+    public async Task<object> GetOrdersByStatusAsync(string status, int page, int pageSize)             // სტატუსის მიხედვით შეკვეთების მიღება, გვერდების მითითებით
     {
-        var query = _db.Orders.Include(o => o.User).AsQueryable();
+        var query = _db.Orders.Include(o => o.User).AsQueryable();                                      // შეკვეთების მიღება იუზერის მონაცემებით
 
         if (!string.IsNullOrEmpty(status))
-            query = query.Where(o => o.Status == status);
+            query = query.Where(o => o.Status == status);                                               // სტატუსის მიხედვით ფილტრაცია
 
-        var totalCount = await query.CountAsync();
+        var totalCount = await query.CountAsync();                                                      // შეკვეთების საერთო რაოდენობის მიღება
         var orders = await query
             .OrderByDescending(o => o.Date)
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
             .ToListAsync();
 
-        var result = orders.Select(o => new
+        var result = orders.Select(o => new                                                             // DTO-ში გადამყვანი მეთოდის გამოყენება
         {
             o.Id,
             User = new { o.User.Id, o.User.FirstName, o.User.Email },
@@ -135,7 +135,7 @@ public class OrderService : IOrderService
                 : JsonConvert.DeserializeObject<List<OrderItemDTO>>(o.ItemsJson)!
         });
 
-        return new { totalCount, page, pageSize, orders = result };
+        return new { totalCount, page, pageSize, orders = result };                                     // შეკვეთების დეტალების ობიექტის შექმნა გვერდებით
     }
 
 }

@@ -1,106 +1,75 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RestaurantAPI.DTOs.BasketDTO;
 using RestaurantAPI.Services.BasketServices.Interfaces;
-using System.Security.Claims;
 
-namespace RestaurantAPI.Controllers
+[Route("api/[controller]")]
+[ApiController]
+[Authorize] 
+public class BasketsController : ControllerBase
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class BasketsController : ControllerBase
+    private readonly IBasketService _basketService;
+
+    public BasketsController(IBasketService basketService)
     {
-        private readonly IBasketService _basketService;
+        _basketService = basketService;
+    }
 
-        public BasketsController(IBasketService basketService)
-        {
-            _basketService = basketService;
-        }
+    private int GetUserId()
+    {
+        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (int.TryParse(userIdClaim, out int userId))
+            return userId;
 
-        private int GetUserId()
-        {
-            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (int.TryParse(userIdClaim, out int userId))
-                return userId;
+        throw new UnauthorizedAccessException("User ID is invalid or missing.");
+    }
 
-            throw new UnauthorizedAccessException("User ID is invalid or missing.");
-        }
+    // GET /api/baskets
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<BasketDto>>> GetAll()
+    {
+        int userId = GetUserId();
+        var baskets = await _basketService.GetAllAsync(userId);
+        return Ok(baskets);
+    }
 
-        [HttpGet("GetAll")]
-        public async Task<ActionResult<IEnumerable<BasketDTO>>> GetAll()
-        {
-            try
-            {
-                int userId = GetUserId();
-                var baskets = await _basketService.GetAllAsync(userId);
-                return Ok(baskets);
-            }
-            catch
-            {
-                return Unauthorized();
-            }
-        }
+    // POST /api/baskets/items
+    [HttpPost("addToBasket")]
+    public async Task<ActionResult<BasketDto>> AddToBasket([FromBody] BasketPostDto dto)
+    {
+        dto.UserId = GetUserId();
+        var result = await _basketService.AddToBasketAsync(dto);
+        return Ok(result);
+    }
 
-        [Authorize]
-        [HttpPost("AddToBasket")]
-        public async Task<ActionResult<BasketDTO>> AddToBasket([FromBody] BasketPostDto dto)
-        {
-            try
-            {
-                dto.UserId = GetUserId();
-                var result = await _basketService.AddToBasketAsync(dto);
-                return Ok(result);
-            }
-            catch
-            {
-                return Unauthorized();
-            }
-        }
+    // PUT /api/baskets/items/{itemId}
+    [HttpPut("updateBasket/{itemId}")]
+    public async Task<IActionResult> UpdateBasket(int ItemId, [FromBody] UpdateBasketDto dto)
+    {
+        dto.UserId = GetUserId();
+        dto.ItemId = ItemId;
+        var success = await _basketService.UpdateBasketAsync(dto);
+        if (!success) return NotFound("Basket item not found");
+        return NoContent();
+    }
 
-        [Authorize]
-        [HttpPut("UpdateBasket")]
-        public async Task<IActionResult> UpdateBasket([FromBody] UpdateBasketDto dto)
-        {
-            try
-            {
-                dto.UserId = GetUserId();
-                var success = await _basketService.UpdateBasketAsync(dto);
-                if (!success) return NotFound("Basket item not found");
-                return NoContent();
-            }
-            catch
-            {
-                return Unauthorized();
-            }
-        }
+    // DELETE /api/baskets/items/{productId}
+    [HttpDelete("items/{productId}")]
+    public async Task<IActionResult> DeleteProduct(int productId)
+    {
+        int userId = GetUserId();
+        var success = await _basketService.DeleteProductAsync(productId, userId);
+        if (!success) return NotFound($"Product with ID {productId} not found in basket");
+        return NoContent();
+    }
 
-        [Authorize]
-        [HttpDelete("DeleteProduct/{productId}")]
-        public async Task<IActionResult> DeleteProduct(int productId)
-        {
-            try
-            {
-                int userId = GetUserId();
-                var success = await _basketService.DeleteProductAsync(productId, userId);
-                if (!success) return NotFound($"Product with ID {productId} not found in basket");
-                return NoContent();
-            }
-            catch
-            {
-                return Unauthorized();
-            }
-        }
-
-        [Authorize]
-        [HttpDelete("Clear")]
-        public async Task<IActionResult> ClearBasket()
-        {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (string.IsNullOrEmpty(userId)) return Unauthorized();
-
-            await _basketService.ClearBasketAsync(int.Parse(userId));
-            return NoContent();
-        }
-
+    // DELETE /api/baskets
+    [HttpDelete("ClearBasket")]
+    public async Task<IActionResult> ClearBasket()
+    {
+        int userId = GetUserId();
+        await _basketService.ClearBasketAsync(userId);
+        return NoContent();
     }
 }

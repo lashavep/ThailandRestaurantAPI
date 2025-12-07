@@ -2,12 +2,10 @@
 
 namespace RestaurantAPI.DTOs.BasketDTO
 {
-    public class BasketDTO
+    public class BasketDto
     {
-        public int Id { get; set; }              // DB id
-        public int Quantity { get; set; }
-        public double Price { get; set; }
-        public int ProductId { get; set; }
-        public ProductDto Product { get; set; } = new ProductDto();
+        public int Id { get; set; }
+        public int UserId { get; set; }
+        public List<BasketItemDto> Items { get; set; } = new();
     }
 }

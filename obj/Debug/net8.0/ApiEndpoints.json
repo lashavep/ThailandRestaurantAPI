@@ -81,7 +81,7 @@
   {
     "ContainingType": "RestaurantAPI.Controllers.AdminController",
     "Method": "Send",
-    "RelativePath": "api/Admin/Send",
+    "RelativePath": "api/Admin/SendMailToAdmin",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -196,9 +196,29 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "RestaurantAPI.Controllers.BasketsController",
+    "ContainingType": "BasketsController",
+    "Method": "GetAll",
+    "RelativePath": "api/Baskets",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[RestaurantAPI.DTOs.BasketDTO.BasketDto, RestaurantAPI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "BasketsController",
     "Method": "AddToBasket",
-    "RelativePath": "api/Baskets/AddToBasket",
+    "RelativePath": "api/Baskets/addToBasket",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -211,7 +231,7 @@
     ],
     "ReturnTypes": [
       {
-        "Type": "RestaurantAPI.DTOs.BasketDTO.BasketDTO",
+        "Type": "RestaurantAPI.DTOs.BasketDTO.BasketDto",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -222,9 +242,9 @@
     ]
   },
   {
-    "ContainingType": "RestaurantAPI.Controllers.BasketsController",
+    "ContainingType": "BasketsController",
     "Method": "ClearBasket",
-    "RelativePath": "api/Baskets/Clear",
+    "RelativePath": "api/Baskets/ClearBasket",
     "HttpMethod": "DELETE",
     "IsController": true,
     "Order": 0,
@@ -232,9 +252,9 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "RestaurantAPI.Controllers.BasketsController",
+    "ContainingType": "BasketsController",
     "Method": "DeleteProduct",
-    "RelativePath": "api/Baskets/DeleteProduct/{productId}",
+    "RelativePath": "api/Baskets/items/{productId}",
     "HttpMethod": "DELETE",
     "IsController": true,
     "Order": 0,
@@ -248,33 +268,18 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "RestaurantAPI.Controllers.BasketsController",
-    "Method": "GetAll",
-    "RelativePath": "api/Baskets/GetAll",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [],
-    "ReturnTypes": [
-      {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[RestaurantAPI.DTOs.BasketDTO.BasketDTO, RestaurantAPI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ]
-  },
-  {
-    "ContainingType": "RestaurantAPI.Controllers.BasketsController",
+    "ContainingType": "BasketsController",
     "Method": "UpdateBasket",
-    "RelativePath": "api/Baskets/UpdateBasket",
+    "RelativePath": "api/Baskets/updateBasket/{itemId}",
     "HttpMethod": "PUT",
     "IsController": true,
     "Order": 0,
     "Parameters": [
+      {
+        "Name": "ItemId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
       {
         "Name": "dto",
         "Type": "RestaurantAPI.DTOs.BasketDTO.UpdateBasketDto",
@@ -286,7 +291,7 @@
   {
     "ContainingType": "RestaurantAPI.Controllers.CategoriesController",
     "Method": "Add",
-    "RelativePath": "api/Categories/Add",
+    "RelativePath": "api/Categories/AddCategory",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -312,7 +317,7 @@
   {
     "ContainingType": "RestaurantAPI.Controllers.CategoriesController",
     "Method": "Delete",
-    "RelativePath": "api/Categories/Delete/{id}",
+    "RelativePath": "api/Categories/DeleteCategory/{id}",
     "HttpMethod": "DELETE",
     "IsController": true,
     "Order": 0,
@@ -328,7 +333,7 @@
   {
     "ContainingType": "RestaurantAPI.Controllers.CategoriesController",
     "Method": "GetAll",
-    "RelativePath": "api/Categories/GetAll",
+    "RelativePath": "api/Categories/GetAllCategory",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -478,7 +483,7 @@
   {
     "ContainingType": "RestaurantAPI.Controllers.NotificationsController",
     "Method": "GetNotifications",
-    "RelativePath": "api/Notifications/GetAll",
+    "RelativePath": "api/Notifications/GetAllNotifications",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -503,8 +508,24 @@
   },
   {
     "ContainingType": "OrdersController",
+    "Method": "GetOrderDetails",
+    "RelativePath": "api/orders/details/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "OrdersController",
     "Method": "GetAllOrders",
-    "RelativePath": "api/orders/all",
+    "RelativePath": "api/orders/GetAllOrders",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -529,24 +550,8 @@
   },
   {
     "ContainingType": "OrdersController",
-    "Method": "GetOrderDetails",
-    "RelativePath": "api/orders/details/{id}",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "id",
-        "Type": "System.Int32",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "OrdersController",
     "Method": "GetMyOrders",
-    "RelativePath": "api/orders/my",
+    "RelativePath": "api/orders/myOrders",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -588,7 +593,7 @@
   {
     "ContainingType": "RestaurantAPI.Controllers.ProductsController",
     "Method": "GetAll",
-    "RelativePath": "api/Products/GetAll",
+    "RelativePath": "api/Products/GetAllProduct",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -722,7 +727,7 @@
     "ContainingType": "RestaurantAPI.Controllers.UsersController",
     "Method": "DeleteUserById",
     "RelativePath": "api/Users/delete/{id}",
-    "HttpMethod": "POST",
+    "HttpMethod": "DELETE",
     "IsController": true,
     "Order": 0,
     "Parameters": [
@@ -737,7 +742,7 @@
   {
     "ContainingType": "RestaurantAPI.Controllers.UsersController",
     "Method": "GetProfile",
-    "RelativePath": "api/Users/me",
+    "RelativePath": "api/Users/GetUserProfile",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -746,24 +751,8 @@
   },
   {
     "ContainingType": "RestaurantAPI.Controllers.UsersController",
-    "Method": "RegisterUser",
-    "RelativePath": "api/Users/register",
-    "HttpMethod": "POST",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "user",
-        "Type": "RestaurantAPI.Models.User",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "RestaurantAPI.Controllers.UsersController",
     "Method": "UpdateProfile",
-    "RelativePath": "api/Users/update",
+    "RelativePath": "api/Users/UpdateUserProfile",
     "HttpMethod": "PUT",
     "IsController": true,
     "Order": 0,
@@ -771,6 +760,22 @@
       {
         "Name": "dto",
         "Type": "RestaurantAPI.DTOs.UserDTO.UpdateProfileDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "RestaurantAPI.Controllers.UsersController",
+    "Method": "RegisterUser",
+    "RelativePath": "api/Users/UserRegister",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "user",
+        "Type": "RestaurantAPI.Models.User",
         "IsRequired": true
       }
     ],

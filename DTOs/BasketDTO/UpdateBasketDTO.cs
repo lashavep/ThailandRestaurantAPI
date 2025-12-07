@@ -8,6 +8,7 @@ namespace RestaurantAPI.DTOs.BasketDTO
         public int Quantity { get; set; }
         public double Price { get; set; }
         public int UserId { get; set; }
+        public int ItemId { get; set; }
     }
 
 }

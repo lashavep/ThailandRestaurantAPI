@@ -2,7 +2,7 @@
 
 namespace RestaurantAPI.DTOs.AuthDTO
 {
-    public class ResetPasswordDTO
+    public class ResetPasswordDTO                                   // DTO პაროლის შეცვლისთვის
     {
         [Required]
         public string Email { get; set; } = null!;

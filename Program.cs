@@ -73,7 +73,7 @@ namespace RestaurantAPI
                 c.SwaggerDoc("v1", new() { Title = "RestaurantAPI", Version = "v1" });
 
                 
-                c.AddSecurityDefinition("Bearer", new()
+                c.AddSecurityDefinition("Bearer", new() 
                 {
                     Name = "Authorization",
                     Type = SecuritySchemeType.ApiKey,

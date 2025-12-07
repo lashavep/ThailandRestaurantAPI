@@ -3,8 +3,9 @@ using static RestaurantAPI.Models.User;
 
 namespace RestaurantAPI.DTOs.UserDTO
 {
-    public class UserDTO
-    {public int Id { get; set; }
+    public class UserDTO                                                        // DTO მომხმარებლისთვის
+    {
+        public int Id { get; set; }
         [EmailAddress] public string Email { get; set; } = null!;
         public string? FirstName { get; set; }
         public string? LastName { get; set; }

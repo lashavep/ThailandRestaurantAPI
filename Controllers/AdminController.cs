@@ -1,4 +1,9 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿// ProductService.CreateProduct() ამატებს ახალ პროდუქტს.
+// ProductService.UpdateProduct() ანახლებს პროდუქტს.
+// ProductService.DeleteProduct() შლის პროდუქტს.
+// ProductDto.CategoryName → პროდუქტის კატეგორიის სახელი.
+
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RestaurantAPI.DTOs.AdminDTO;
 using RestaurantAPI.Services.AdminServices.Interfaces;
@@ -25,12 +30,12 @@ namespace RestaurantAPI.Controllers
 
         // === Email ===
         [HttpPost("SendPromoEmail")]
-        public async Task<IActionResult> SendPromoEmail([FromBody] PromoMessageDto dto)
+        public async Task<IActionResult> SendPromoEmail([FromBody] PromoMessageDto dto)                         // მეთოდი სარეკლამო მეილების გასაგზავნად
         {
-            var users = await _userService.GetAllAsync();
+            var users = await _userService.GetAllAsync();                                                       // ყველა მომხმარებლის მიღება სერვისიდან
 
 
-            string htmlBody = $@"
+            string htmlBody = $@"                                                                               // HTML შაბლონი სარეკლამო მეილისთვის
 <!DOCTYPE html>
 <html lang='ka'>
 <head>
@@ -110,72 +115,72 @@ If you do not wish to receive promotional emails, you can unsubscribe from your 
 </html>";
 
 
-            foreach (var user in users.Where(u => u.IsSubscribedToPromo))
+            foreach (var user in users.Where(u => u.IsSubscribedToPromo))                                   // მხოლოდ იმ მომხმარებლებისთვის, რომლებიც გამოწერილნი არიან სარეკლამო მეილებზე
             {
-                await _emailService.SendEmailAsync(user.Email, dto.Subject, htmlBody);
+                await _emailService.SendEmailAsync(user.Email, dto.Subject, htmlBody);                      // მეილის გაგზავნა EmailService-ის საშუალებით
             }
 
-            return Ok(new { message = "Promo emails sent successfully" });
-        }
+            return Ok(new { message = "Promo emails sent successfully" });                                  // წარმატების პასუხის დაბრუნება
+        }   
 
 
         [AllowAnonymous]
-        [HttpPost("Send")]
-        public async Task<IActionResult> Send([FromBody] ContactMessageDto dto)
+        [HttpPost("SendMailToAdmin")]
+        public async Task<IActionResult> Send([FromBody] ContactMessageDto dto)                             // მეთოდი კონტაქტური ფორმის შეტყობინების გაგზავნისთვის ადმინისტრატორთან
         {
-            var subject = $"New contact form message from {dto.Name}";
-            var body = $"Sender: {dto.Email}\n\nMessage:\n{dto.Message}";
+            var subject = $"New contact form message from {dto.Name}";                                      // მეილის თემის შექმნა
+            var body = $"Sender: {dto.Email}\n\nMessage:\n{dto.Message}";                                   // მეილის შინაარსის შექმნა
 
-            await _emailService.SendEmailAsync("foodlab.rs@gmail.com", subject, body);
+            await _emailService.SendEmailAsync("foodlab.rs@gmail.com", subject, body);                      // მეილის გაგზავნა ადმინისტრატორის იმეილზე
 
-            return Ok(new { message = "Message sent to admin" });
+            return Ok(new { message = "Message sent to admin" });                                           // წარმატების პასუხის დაბრუნება
         }
 
-        // === Products ===
+
         [HttpGet("GetAllProduct")]
-        public async Task<IActionResult> GetAllProducts()
-        {
-            var products = await _service.GetAllProductsAsync();
-            return Ok(products);
+        public async Task<IActionResult> GetAllProducts()                                                   // მეთოდი ადმინისტრატვორთან ყველა პროდუქტის მისაღებად
+        { 
+            var products = await _service.GetAllProductsAsync();                                            // პროდუქტების მიღება ადმინისტრატორის სერვისიდან
+            return Ok(products);                                                                            // HTTP 200 პასუხის დაბრუნება პროდუქტების სიით
         }
 
         [HttpPost("CreateProduct")]
-        public async Task<IActionResult> CreateProduct([FromBody] AdminProductDto dto)
+        public async Task<IActionResult> CreateProduct([FromBody] AdminProductDto dto)                      // მეთოდი ახალი პროდუქტის შექმნისთვის
         {
-            var result = await _service.CreateProductAsync(dto);
+            var result = await _service.CreateProductAsync(dto);                                            // ახალი პროდუქტის შექმნა ადმინისტრატორის სერვისში
             return Ok(result);
         }
 
         [HttpPut("UpdateProduct/{id}")]
-        public async Task<IActionResult> UpdateProduct(int id, [FromBody] AdminProductDto dto)
+        public async Task<IActionResult> UpdateProduct(int id, [FromBody] AdminProductDto dto)              // მეთოდი პროდუქტის განახლებისთვის
         {
-            var result = await _service.UpdateProductAsync(id, dto);
+            var result = await _service.UpdateProductAsync(id, dto);                                        // პროდუქტის განახლება ადმინისტრატორის სერვისში
             return Ok(result);
         }
 
         [HttpDelete("DeleteProduct/{id}")]
-        public async Task<IActionResult> DeleteProduct(int id)
+        public async Task<IActionResult> DeleteProduct(int id)                                              //  მეთოდი პროდუქტის წასაშლელად
         {
-            var result = await _service.DeleteProductAsync(id);
+            var result = await _service.DeleteProductAsync(id);                                             // პროდუქტის წაშლა ადმინისტრატორის სერვისში
             if (result)
-                return Ok($"The product with ID {id} has been successfully deleted!");
+                return Ok($"The product with ID {id} has been successfully deleted!");                      // წარმატების პასუხის დაბრუნება
             else
-                return NotFound($"The product with ID {id} not found!");
+                return NotFound($"The product with ID {id} not found!");                                    // NotFound პასუხის დაბრუნება, თუ პროდუქტი არ არის ნაპოვნი
         }
 
-        // === Users ===
+
         [HttpPut("PromoteUserByEmail")]
-        public async Task<IActionResult> PromoteUserByEmail([FromQuery] string email, [FromQuery] string newRole)
+        public async Task<IActionResult> PromoteUserByEmail([FromQuery] string email, [FromQuery] string newRole)       // მეთოდი მომხმარებლის როლის შეცვლისთვის ელფოსტის მიხედვით
         {
-            await _service.PromoteUserByEmailAsync(email, newRole);
-            return Ok($"User {email} promoted to {newRole}");
+            await _service.PromoteUserByEmailAsync(email, newRole);                                                     // მომხმარებლის როლის შეცვლა ადმინისტრატორის სერვისში
+            return Ok($"User {email} promoted to {newRole}");                                                           // წარმატების პასუხის დაბრუნება
         }
 
         [HttpDelete("DeleteUser/{userId}")]
-        public async Task<IActionResult> DeleteUser(int userId)
+        public async Task<IActionResult> DeleteUser(int userId)                                                         // მეთოდი მომხმარებლის წასაშლელად ID-ის მიხედვით
         {
-            await _service.DeleteUserByIdAsync(userId);
-            return Ok($"User {userId} deleted successfully");
+            await _service.DeleteUserByIdAsync(userId);                                                                 // მომხმარებლის წაშლა ადმინისტრატორის სერვისში
+            return Ok($"User {userId} deleted successfully");                                                           // წარმატების პასუხის დაბრუნება
         }
     }
 }

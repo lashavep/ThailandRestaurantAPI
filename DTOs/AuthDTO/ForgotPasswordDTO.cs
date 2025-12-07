@@ -2,9 +2,9 @@
 
 namespace RestaurantAPI.DTOs.AuthDTO
 {
-    public class ForgotPasswordDTO
+    public class ForgotPasswordDTO                          // DTO პაროლის აღდგენის მოთხოვნისთვის
     {
-        [Required]
+        [Required]                                          
         [EmailAddress]
         public string Email { get; set; } = null!;
     }

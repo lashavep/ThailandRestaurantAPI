@@ -3,7 +3,7 @@ using static RestaurantAPI.Models.User;
 
 namespace RestaurantAPI.DTOs.AuthDTO
 {
-    public class RegisterDTO
+    public class RegisterDTO                                                // DTO რეგისტრაციისთვის
     {
         public string FirstName { get; set; } = null!;
         public string LastName { get; set; } = null!;

@@ -5,12 +5,12 @@ namespace RestaurantAPI.Services.UserServices.Interfaces
 {
     public interface IUserService
     {
-        Task<IEnumerable<UserDTO>> GetAllAsync();
-        Task<UserDTO?> GetByEmailAsync(string email);
-        Task<UserDTO?> GetByIdAsync(int id);
-        Task<UserDTO> RegisterAsync(User user);
-        Task<UserDTO> DeleteUserById(int id);
-        Task<bool> UpdateProfileAsync(int id, UpdateProfileDTO dto);
+        Task<IEnumerable<UserDTO>> GetAllAsync();                           // ყველა მომხმარებლის მიღება
+        Task<UserDTO?> GetByEmailAsync(string email);                       // მომხმარებლის მიღება Email-ის მიხედვით
+        Task<UserDTO?> GetByIdAsync(int id);                                // მომხმარებლის მიღება ID-ის მიხედვით
+        Task<UserDTO> RegisterAsync(User user);                             // ახალი მომხმარებლის რეგისტრაცია
+        Task<bool> DeleteUserById(int id);                               // მომხმარებლის წაშლა ID-ის მიხედვით
+        Task<bool> UpdateProfileAsync(int id, UpdateProfileDTO dto);        // მომხმარებლის პროფილის განახლება
     }
 }
 

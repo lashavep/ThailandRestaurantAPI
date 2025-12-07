@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "E:\\dev\\APS.NET Core\\API\\RestaurantAPI\\RestaurantAPI\\RestaurantAPI.csproj": {}
+    "E:\\dev\\Final\\RestaurantAPI\\RestaurantAPI\\RestaurantAPI.csproj": {}
   },
   "projects": {
-    "E:\\dev\\APS.NET Core\\API\\RestaurantAPI\\RestaurantAPI\\RestaurantAPI.csproj": {
+    "E:\\dev\\Final\\RestaurantAPI\\RestaurantAPI\\RestaurantAPI.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "E:\\dev\\APS.NET Core\\API\\RestaurantAPI\\RestaurantAPI\\RestaurantAPI.csproj",
+        "projectUniqueName": "E:\\dev\\Final\\RestaurantAPI\\RestaurantAPI\\RestaurantAPI.csproj",
         "projectName": "RestaurantAPI",
-        "projectPath": "E:\\dev\\APS.NET Core\\API\\RestaurantAPI\\RestaurantAPI\\RestaurantAPI.csproj",
+        "projectPath": "E:\\dev\\Final\\RestaurantAPI\\RestaurantAPI\\RestaurantAPI.csproj",
         "packagesPath": "C:\\Users\\lasha\\.nuget\\packages\\",
-        "outputPath": "E:\\dev\\APS.NET Core\\API\\RestaurantAPI\\RestaurantAPI\\obj\\",
+        "outputPath": "E:\\dev\\Final\\RestaurantAPI\\RestaurantAPI\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

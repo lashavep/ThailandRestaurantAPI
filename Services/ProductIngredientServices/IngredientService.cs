@@ -13,17 +13,16 @@ namespace RestaurantAPI.Services.ProductIngredientServices
             _context = context;
         }
 
-        public async Task<IEnumerable<ProductIngredient>> GetAllIngredientsAsync()
+        public async Task<IEnumerable<ProductIngredient>> GetAllIngredientsAsync()       // ყველა ინგრედიენტის მიღება
         {
-            var ingredients = await _context.ProductIngredients.ToListAsync();
+            var ingredients = await _context.ProductIngredients.ToListAsync();           // DB-დან ყველა ინგრედიენტის მიღება
 
-            return ingredients.Select(i => new ProductIngredient
+            return ingredients.Select(i => new ProductIngredient                         // DTO-ში გადაყვანა
             {
                 Id = i.Id,
                 Name = i.Name,
                 Ingredients = i.Ingredients
             });
         }
-
     }
 }

@@ -11,7 +11,7 @@ namespace RestaurantAPI.Services.ProductServices.Implementations
     public class ProductService : IProductService
     {
         private readonly IProductRepository _repository;
-        private readonly ApplicationDbContext _context;
+        private readonly ApplicationDbContext _context; 
 
 
         public ProductService(IProductRepository repository, ApplicationDbContext dbContext)
@@ -20,7 +20,7 @@ namespace RestaurantAPI.Services.ProductServices.Implementations
             _context = dbContext;
         }
 
-        public async Task<IEnumerable<ProductDto>> GetAllAsync()
+        public async Task<IEnumerable<ProductDto>> GetAllAsync()                                                    // ყველა პროდუქტის მიღება
         {
             var entities = await _repository.GetAllAsync();
             return entities.Select(p => new ProductDto
@@ -33,15 +33,16 @@ namespace RestaurantAPI.Services.ProductServices.Implementations
                 Vegeterian = p.Vegeterian,
                 Spiciness = p.Spiciness,
                 CategoryId = p.CategoryId,
-                Ingredients = p.Ingredients
-                    .SelectMany(i => i.Ingredients.Split(','))
+                CategoryName = p.Category?.Name ?? string.Empty,
+                Ingredients = p.Ingredients 
+                    .SelectMany(i => i.Ingredients.Split(','))                                                       // ინგრედიენტების ჩამონათვალი ერთ სტრინგში
                     .Select(s => s.Trim())
                     .Where(s => !string.IsNullOrEmpty(s))
                     .ToList()
             });
         }
 
-        public async Task<IEnumerable<ProductDto>> GetFilteredAsync(bool? vegeterian, bool? nuts, int? spiciness, int? categoryId)
+        public async Task<IEnumerable<ProductDto>> GetFilteredAsync(bool? vegeterian, bool? nuts, int? spiciness, int? categoryId) // ფილტრირებული პროდუქტის მიღება
         {
             var products = await _repository.GetAllAsync();
 
@@ -50,7 +51,7 @@ namespace RestaurantAPI.Services.ProductServices.Implementations
                 (!nuts.HasValue || p.Nuts == nuts.Value) &&
                 (!spiciness.HasValue || p.Spiciness == spiciness.Value) &&
                 (!categoryId.HasValue || p.CategoryId == categoryId.Value)
-            );
+            );                                                                                                                    // პროდუქტის ფილტრირება მოცემული კრიტერიუმების მიხედვით
 
             return filtered.Select(p => new ProductDto
             {
@@ -65,7 +66,7 @@ namespace RestaurantAPI.Services.ProductServices.Implementations
             });
         }
 
-        public async Task<IEnumerable<IngredientDto>> GetAllIngredientsAsync()
+        public async Task<IEnumerable<IngredientDto>> GetAllIngredientsAsync()                                                  // ყველა ინგრედიენტის მიღება
         {
             var ingredients = await _context.ProductIngredients.ToListAsync();
 
@@ -79,7 +80,7 @@ namespace RestaurantAPI.Services.ProductServices.Implementations
         }
 
 
-        public async Task<List<IngredientDto>> GetIngredientByProductIdAsync(int productId)
+        public async Task<List<IngredientDto>> GetIngredientByProductIdAsync(int productId)                                     // მეთოდი ინგრედიენტების მისაღებად პროდუქტის ID-ის მიხედვით
         {
             var ingredients = await _context.ProductIngredients
                 .Where(i => i.ProductId == productId)
@@ -95,7 +96,7 @@ namespace RestaurantAPI.Services.ProductServices.Implementations
         }
 
 
-        public async Task<ProductIngredient> AddIngredientAsync(int productId, string ingredientName)
+        public async Task<ProductIngredient> AddIngredientAsync(int productId, string ingredientName)           // ახალი ინგრედიენტის დამატება
         {
             var ingredient = new ProductIngredient
             {
@@ -108,9 +109,9 @@ namespace RestaurantAPI.Services.ProductServices.Implementations
             return ingredient;
         }
 
-        public async Task<ProductIngredient> UpdateIngredientAsync(int id, string name)
+        public async Task<ProductIngredient> UpdateIngredientAsync(int id, string name)                         // ინგრედიენტის განახლება
         {
-            var ingredient = await _repository.GetIngredientByIdAsync(id);
+            var ingredient = await _repository.GetIngredientByIdAsync(id);                                      // ინგრედიენტის მიღება ID-ის მიხედვით
             if (ingredient == null) throw new KeyNotFoundException("Ingredient not found");
 
             ingredient.Name = name;
@@ -120,9 +121,9 @@ namespace RestaurantAPI.Services.ProductServices.Implementations
             return ingredient;
         }
 
-        public async Task<bool> DeleteIngredientAsync(int id)
+        public async Task<bool> DeleteIngredientAsync(int id)                                                   // ინგრედიენტის წაშლა
         {
-            var ingredient = await _repository.GetIngredientByIdAsync(id);
+            var ingredient = await _repository.GetIngredientByIdAsync(id);                                      // ინგრედიენტის მიღება ID-ის მიხედვით
             if (ingredient == null) return false;
 
             await _repository.DeleteIngredientAsync(ingredient);

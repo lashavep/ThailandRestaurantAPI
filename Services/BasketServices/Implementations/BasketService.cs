@@ -19,7 +19,8 @@ namespace RestaurantAPI.Services.BasketServices.Implementations
             _dbContext = dbContext;
         }
 
-        public async Task<BasketDTO> AddToBasketAsync(BasketPostDto dto)
+        // პროდუქტის დამატება კალათაში
+        public async Task<BasketDto> AddToBasketAsync(BasketPostDto dto)
         {
             var existing = await _repository.GetBasketContainingProductAsync(dto.ProductId, dto.UserId);
             if (existing == null)
@@ -32,24 +33,26 @@ namespace RestaurantAPI.Services.BasketServices.Implementations
                     UserId = dto.UserId
                 };
 
-                var saved = await _repository.AddAsync(basket);
-
-                return MapToDto(saved);
+                await _repository.AddAsync(basket);
+            }
+            else
+            {
+                existing.Quantity = Math.Clamp(existing.Quantity + dto.Quantity, 1, 9999);
+                existing.Price = dto.Price;
+                await _repository.UpdateAsync(existing);
             }
 
-            existing.Quantity = Math.Clamp(existing.Quantity + dto.Quantity, 1, 9999);
-            existing.Price = dto.Price;
-            await _repository.UpdateAsync(existing);
-
-            return MapToDto(existing);
+            // დაბრუნება სრული კალათის DTO
+            return await BuildBasketDto(dto.UserId);
         }
 
-        public async Task<IEnumerable<BasketDTO>> GetAllAsync(int userId)
+        // ყველა პროდუქტის მიღება კალათიდან
+        public async Task<BasketDto> GetAllAsync(int userId)
         {
-            var entities = await _repository.GetAllByUserAsync(userId);
-            return entities.Select(MapToDto);
+            return await BuildBasketDto(userId);
         }
 
+        // კალათის პროდუქტის განახლება
         public async Task<bool> UpdateBasketAsync(UpdateBasketDto dto)
         {
             var basket = await _repository.GetBasketContainingProductAsync(dto.ProductId, dto.UserId);
@@ -58,21 +61,45 @@ namespace RestaurantAPI.Services.BasketServices.Implementations
                 basket.Quantity = Math.Clamp(dto.Quantity, 1, 99);
                 basket.Price = dto.Price;
                 await _repository.UpdateAsync(basket);
+                return true;
             }
-            return basket != null;
+            return false;
         }
 
+        // პროდუქტის წაშლა კალათიდან
         public async Task<bool> DeleteProductAsync(int productId, int userId)
         {
             var existing = await _repository.GetBasketContainingProductAsync(productId, userId);
             if (existing != null)
             {
                 await _repository.DeleteAsync(productId, userId);
+                return true;
             }
-            return existing != null;
+            return false;
         }
 
-        private BasketDTO MapToDto(Basket b) => new BasketDTO
+        // კალათის გასუფთავება
+        public async Task ClearBasketAsync(int userId)
+        {
+            var items = await _dbContext.Baskets.Where(b => b.UserId == userId).ToListAsync();
+            _dbContext.Baskets.RemoveRange(items);
+            await _dbContext.SaveChangesAsync();
+        }
+
+        // Helper: ააწყოს BasketDto კონკრეტული UserId-სთვის
+        private async Task<BasketDto> BuildBasketDto(int userId)
+        {
+            var entities = await _repository.GetAllByUserAsync(userId);
+
+            return new BasketDto
+            {
+                UserId = userId,
+                Items = entities.Select(MapToItemDto).ToList()
+            };
+        }
+
+        // Helper: Basket → BasketItemDto
+        private BasketItemDto MapToItemDto(Basket b) => new BasketItemDto
         {
             Id = b.Id,
             Quantity = b.Quantity,
@@ -90,14 +117,5 @@ namespace RestaurantAPI.Services.BasketServices.Implementations
                 CategoryId = b.Product.CategoryId
             }
         };
-
-        public async Task ClearBasketAsync(int userId)
-        {
-            var items = await _dbContext.Baskets.Where(b => b.UserId == userId).ToListAsync();
-            _dbContext.Baskets.RemoveRange(items);
-            await _dbContext.SaveChangesAsync();
-        }
-
     }
-
 }

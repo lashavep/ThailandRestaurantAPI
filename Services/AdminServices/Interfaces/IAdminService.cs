@@ -5,12 +5,12 @@ namespace RestaurantAPI.Services.AdminServices.Interfaces
 {
     public interface IAdminService
     {
-        Task<List<ProductWithCategoryDto>> GetAllProductsAsync();
-        Task<ProductWithCategoryDto> CreateProductAsync(AdminProductDto dto);
-        Task<ProductWithCategoryDto> UpdateProductAsync(int id, AdminProductDto dto);
-        Task<bool> DeleteProductAsync(int id);
-        Task PromoteUserAsync(int userId, string newRole);
-        Task PromoteUserByEmailAsync(string email, string newRole);
-        Task DeleteUserByIdAsync(int userId);
+        Task<List<ProductWithCategoryDto>> GetAllProductsAsync();                               // ყველა პროდუქტის მიღება
+        Task<ProductWithCategoryDto> CreateProductAsync(AdminProductDto dto);                   // ახალი პროდუქტის შექმნა
+        Task<ProductWithCategoryDto> UpdateProductAsync(int id, AdminProductDto dto);           // პროდუქტის განახლება
+        Task<bool> DeleteProductAsync(int id);                                                  // პროდუქტის წაშლა
+        Task PromoteUserAsync(int userId, string newRole);                                      // მომხმარებლის როლის განახლება
+        Task PromoteUserByEmailAsync(string email, string newRole);                             // მომხმარებლის როლის განახლება Email-ის მიხედვით
+        Task DeleteUserByIdAsync(int userId);                                                   // მომხმარებლის წაშლა ID-ის მიხედვით
     }
 }

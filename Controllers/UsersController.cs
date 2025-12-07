@@ -1,4 +1,11 @@
-﻿using System.IdentityModel.Tokens.Jwt;
+﻿// UsersController
+// პასუხისმგებელია მომხმარებლის პროფილის მართვაზე.
+// UserService.GetProfile() აბრუნებს მომხმარებლის მონაცემებს.
+// UserService.UpdateProfile() ანახლებს პროფილს.
+// UserService.DeleteUserById() შლის მომხმარებელს.
+
+
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -23,38 +30,38 @@ namespace RestaurantAPI.Controllers
         }
 
 
-        [HttpPost("register")]
-        public async Task<IActionResult> RegisterUser([FromBody] User user)
+        [HttpPost("UserRegister")]                                              // მომხმარებლის რეგისტრაცია.
+        public async Task<IActionResult> RegisterUser([FromBody] User user)     // იღებს მომხმარებლის ობიექტს.
         {
             try
             {
-                var createdUser = await _userService.RegisterAsync(user);
-                return CreatedAtAction(nameof(GetById), new { id = createdUser.Id }, createdUser);
+                var createdUser = await _userService.RegisterAsync(user);       // ქმნის ახალ მომხმარებელს UserService-ის საშუალებით.
+                return CreatedAtAction(nameof(GetById), new { id = createdUser.Id }, createdUser); // აბრუნებს CreatedAtAction პასუხს, რომელიც შეიცავს შექმნილ მომხმარებელს.
             }
-            catch (InvalidOperationException ex)
+            catch (InvalidOperationException ex)                                // თუ მომხმარებელი უკვე არსებობს, იჭერს ექსეფშენს.
             {
-                return Conflict(ex.Message);
+                return Conflict(ex.Message);                                    // აბრუნებს Conflict პასუხს შესაბამის შეტყობინებასთან ერთად.
             }
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]                                            // მხოლოდ ადმინისტრატორებისთვის.
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<UserDTO>>> GetAllUsers()
+        public async Task<ActionResult<IEnumerable<UserDTO>>> GetAllUsers()     // მეთოდი ყველა მომხმარებლის მისაღებად
         {
-            var users = await _userService.GetAllAsync();
-            return Ok(users);
+            var users = await _userService.GetAllAsync();                       // მომხმარებლების მიღება სერვისიდან
+            return Ok(users);                                                   // HTTP 200 პასუხის დაბრუნება მომხმარებლების სიით.
         }
 
         [Authorize]
-        [HttpGet("me")]
-        public async Task<IActionResult> GetProfile()
+        [HttpGet("GetUserProfile")]                                             // მომხმარებლის პროფილის მიღება.
+        public async Task<IActionResult> GetProfile()                           // მეთოდი ავტორიზებული მომხმარებლის პროფილის მისაღებად
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? User.FindFirstValue(JwtRegisteredClaimNames.Sub);
-            var user = await _userService.GetByIdAsync(int.Parse(userId));
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? User.FindFirstValue(JwtRegisteredClaimNames.Sub); // მომხმარებლის ID-ს მიღება ტოკენიდან
+            var user = await _userService.GetByIdAsync(int.Parse(userId));      // მომხმარებლის მონაცემების მიღება სერვისიდან ID-ის მიხედვით
             if (user == null)
-                return NotFound();
+                return NotFound();                                              // თუ მომხმარებელი არ არსებობს, აბრუნებს NotFound პასუხს
 
-            return Ok(new
+            return Ok(new                               
             {
                 user.FirstName,
                 user.LastName,
@@ -65,54 +72,71 @@ namespace RestaurantAPI.Controllers
                 user.Address,
                 user.Zipcode,
                 user.IsSubscribedToPromo
-            });
+            });                                                                 // HTTP 200 პასუხის დაბრუნება მომხმარებლის მონაცემებით
         }
 
 
 
         [Authorize]
-        [HttpPut("update")]
-        public async Task<IActionResult> UpdateProfile([FromBody] UpdateProfileDTO dto)
+        [HttpPut("UpdateUserProfile")]
+        public async Task<IActionResult> UpdateProfile([FromBody] UpdateProfileDTO dto)   // მომხმარებლის პროფილის განახლება
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (!int.TryParse(userId, out int id)) return Unauthorized();
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);                    // მომხმარებლის ID-ს მიღება ტოკენიდან
+            if (!int.TryParse(userId, out int id))                                          // ID-ის გადაყვანა int ტიპში
+                return Unauthorized();                                                      // თუ ID არ არის ვალიდური, აბრუნებს Unauthorized პასუხს
 
-            var success = await _userService.UpdateProfileAsync(id, dto);
-            if (!success) return BadRequest("Update failed");
+            try
+            {
+                var success = await _userService.UpdateProfileAsync(id, dto); 
 
-            return Ok(new { message = "Profile updated successfully" });
+                if (!success)
+                    return BadRequest(new { message = "Update failed" });                   // თუ განახლება ვერ მოხერხდა, აბრუნებს BadRequest პასუხს
+
+                return Ok(new { message = "Profile updated successfully" });                // HTTP 200 პასუხის დაბრუნება წარმატების შეტყობინებით
+            }
+            catch (InvalidOperationException ex)
+            {
+                
+                return BadRequest(new { message = ex.Message });                            // თუ მომხმარებელი არ არსებობს, აბრუნებს BadRequest პასუხს შესაბამის შეტყობინებასთან ერთად
+            }
+            catch (Exception)
+            {
+               
+                return StatusCode(500, new { message = "An unexpected error occurred" });   // ზოგადი შეცდომის პასუხი
+            }
         }
+
 
 
 
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<User>> GetById(int id)
+        public async Task<ActionResult<User>> GetById(int id)                           // მეთოდი მომხმარებლის მიღებისთვის ID-ის მიხედვით
         {
-            var user = await _userService.GetByIdAsync(id);
-            if (user == null) return NotFound();
-            return Ok(user);
+            var user = await _userService.GetByIdAsync(id);                             // მომხმარებლის მიღება სერვისიდან ID-ის მიხედვით
+            if (user == null) return NotFound();                                        // თუ მომხმარებელი არ არსებობს, აბრუნებს NotFound პასუხს
+                return Ok(user);                                                        // HTTP 200 პასუხის დაბრუნება მომხმარებლის მონაცემებით
         }
 
         [HttpGet("by-email")]
-        public async Task<ActionResult<User>> GetByEmail(string email)
+        public async Task<ActionResult<User>> GetByEmail(string email)                  // მეთოდი მომხმარებლის მიღებისთვის ელფოსტის მიხედვით
         {
-            var user = await _userService.GetByEmailAsync(email);
-            if (user == null) return NotFound();
-            return Ok(user);
+            var user = await _userService.GetByEmailAsync(email);                       
+            if (user == null) return NotFound();                                        // თუ მომხმარებელი არ არსებობს, აბრუნებს NotFound პასუხს
+            return Ok(user);                                                            // HTTP 200 პასუხის დაბრუნება მომხმარებლის მონაცემებით
         }
 
-        [HttpPost("delete/{id}")]
-        public async Task<IActionResult> DeleteUserById(int id)
+        [HttpDelete("delete/{id}")]
+        public async Task<IActionResult> DeleteUserById(int id)                         // მეთოდი მომხმარებლის წასაშლელად ID-ის მიხედვით
         {
             try
             {
-                var deletedUser = await _userService.DeleteUserById(id);
-                return Ok($"User with id {id} successfully deleted");
+                var deletedUser = await _userService.DeleteUserById(id);                // მომხმარებლის წაშლა სერვისში ID-ის მიხედვით
+                return Ok($"User with id {id} successfully deleted");                   // HTTP 200 პასუხის დაბრუნება წარმატების შეტყობინებით
             }
             catch (InvalidOperationException ex)
             {
-                return NotFound(ex.Message);
+                return NotFound(ex.Message);                                            // თუ მომხმარებელი არ არსებობს, აბრუნებს NotFound პასუხს შესაბამის შეტყობინებასთან ერთად
             }
         }
     }

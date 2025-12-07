@@ -1,6 +1,6 @@
 ﻿namespace RestaurantAPI.DTOs.AdminDTO
 {
-    public class AdminProductDto
+    public class AdminProductDto                                        // DTO ახალი პროდუქტის შექმნისთვის ადმინისტრატორის მიერ
     {
         public string Name { get; set; } = string.Empty;
         public decimal? Price { get; set; }
@@ -8,8 +8,8 @@
         public int? Spiciness { get; set; }
         public bool? Vegeterian { get; set; }
         public bool? Nuts { get; set; }
-        public string? CategoryName { get; set; }
-        public List<string>? Ingredients { get; set; }
+        public string? CategoryName { get; set; }                   
+        public List<string>? Ingredients { get; set; }                  // პროდუქტის ინგრედიენტების სია
 
     }
 

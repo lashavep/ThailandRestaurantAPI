@@ -13,14 +13,14 @@ namespace RestaurantAPI.Repositories.CategoryRepos.Implementations
             _context = context;
         }
 
-        public async Task<Category> AddAsync(Category category)
+        public async Task<Category> AddAsync(Category category)                                      // ახალი კატეგორიის დამატება
         {
             _context.Categories.Add(category);
             await _context.SaveChangesAsync();
             return category;
         }
 
-        public async Task<bool> DeleteAsync(int id)
+        public async Task<bool> DeleteAsync(int id)                                                 // კატეგორიის წაშლა ID-ის მიხედვით
         {
             var category = await _context.Categories.FirstOrDefaultAsync(c => c.Id == id);
             if (category == null) return false;
@@ -29,14 +29,14 @@ namespace RestaurantAPI.Repositories.CategoryRepos.Implementations
             await _context.SaveChangesAsync();
             return true;
         }
-        public async Task<IEnumerable<Category>> GetAllAsync()
+        public async Task<IEnumerable<Category>> GetAllAsync()                                      // ყველა კატეგორიის მიღება
         {
             return await _context.Categories
             .Include(c => c.Products)
             .ToListAsync();
         }
 
-        public async Task<Category?> GetByIdAsync(int id)
+        public async Task<Category?> GetByIdAsync(int id)                                           // კატეგორიის მიღება ID-ის მიხედვით
         {
             return await _context.Categories
             .Include(c => c.Products)

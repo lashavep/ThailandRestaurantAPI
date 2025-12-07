@@ -1,18 +1,17 @@
 ﻿using Microsoft.AspNetCore.SignalR;
-using RestaurantAPI.Models;
 
 namespace RestaurantAPI.Hubs.NotificationHub
 {
-    public class NotificationHub : Hub
+    public class NotificationHub : Hub                                                      // SignalR ჰაბი შეტყობინებებისთვის
     {
-        public override async Task OnConnectedAsync()
+        public override async Task OnConnectedAsync()                                       // ჰაბზე კავშირის დამყარებისას
         {
-            var role = Context.User?.FindFirst("role")?.Value;
-            if (role == "Admin")
+            var role = Context.User?.FindFirst("role")?.Value;                              // მომხმარებლის როლის მიღება
+            if (role == "Admin")                                                            // თუ როლი ადმინისტრატორია
             {
-                await Groups.AddToGroupAsync(Context.ConnectionId, "Admins");
+                await Groups.AddToGroupAsync(Context.ConnectionId, "Admins");               // ადმინისტრატორების ჯგუფში დამატება
             }
-            await base.OnConnectedAsync();
+            await base.OnConnectedAsync();                                                  // ბაზის მეთოდის გამოძახება
         }
     }
 }

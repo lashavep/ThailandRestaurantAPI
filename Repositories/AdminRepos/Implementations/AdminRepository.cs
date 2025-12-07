@@ -15,27 +15,27 @@ namespace RestaurantAPI.Repositories.AdminRepos.Implementations
                 _context = context;
             }
 
-            public async Task<List<Product>> GetAllProductsAsync()
+            public async Task<List<Product>> GetAllProductsAsync()                                  // ყველა პროდუქტის მიღება
             {
-                return await _context.Products.Include(p => p.Category).ToListAsync();
+                return await _context.Products.Include(p => p.Category).ToListAsync();              //დაბრუნება კატეგორიის მითითებით
             }
 
-            public async Task<Product?> GetProductByIdAsync(int id)
+            public async Task<Product?> GetProductByIdAsync(int id)                                 // პროდუქტის მიღება ID-ის მიხედვით
             {
-                return await _context.Products.FindAsync(id);
+                return await _context.Products.FindAsync(id);                                       
             }
 
-            public async Task<Category?> GetCategoryByNameAsync(string name)
+            public async Task<Category?> GetCategoryByNameAsync(string name)                        // კატეგორიის მიღება სახელის მიხედვით
             {
-                return await _context.Categories.FirstOrDefaultAsync(c => c.Name == name);
+                return await _context.Categories.FirstOrDefaultAsync(c => c.Name == name);          
             }
 
-            public async Task<Category?> GetCategoryByIdAsync(int id)
+            public async Task<Category?> GetCategoryByIdAsync(int id)                               // კატეგორიის მიღება ID-ის მიხედვით
             {
                 return await _context.Categories.FindAsync(id);
             }
 
-            public async Task<Product?> GetProductWithCategoryAsync(int id)
+            public async Task<Product?> GetProductWithCategoryAsync(int id)                         // პროდუქტის მიღება კატეგორიის ID-ის მიხედვით
             {
                 return await _context.Products
                     .Include(p => p.Category)
@@ -43,57 +43,57 @@ namespace RestaurantAPI.Repositories.AdminRepos.Implementations
                     .FirstOrDefaultAsync(p => p.Id == id);
             }
 
-            public async Task AddProductAsync(Product product)
+            public async Task AddProductAsync(Product product)                                      // ახალი პროდუქტის დამატება
             {
                 _context.Products.Add(product);
                 await _context.SaveChangesAsync();
             }
 
-            public async Task UpdateProductAsync(Product product)
+            public async Task UpdateProductAsync(Product product)                                   // პროდუქტის განახლება
             {
                 _context.Products.Update(product);
                 await _context.SaveChangesAsync();
             }
 
-            public async Task DeleteProductAsync(Product product)
-            {
+            public async Task DeleteProductAsync(Product product)                                   // პროდუქტის წაშლა
+            {   
                 _context.Products.Remove(product);
                 await _context.SaveChangesAsync();
             }
 
-            public async Task<User?> GetUserByIdAsync(int id)
+            public async Task<User?> GetUserByIdAsync(int id)                                       // მომხმარებლის მიღება ID-ის მიხედვით
             {
                 return await _context.Users.FindAsync(id);
             }
 
-            public async Task<User?> GetUserByEmailAsync(string email)
-            {
+            public async Task<User?> GetUserByEmailAsync(string email)                              // მომხმარებლის მიღება Email-ის მიხედვით
+            {   
                 return await _context.Users.FirstOrDefaultAsync(u => u.Email.ToLower() == email.ToLower());
             }
 
 
-            public async Task UpdateUserAsync(User user)
+            public async Task UpdateUserAsync(User user)                                            // მომხმარებლის განახლება
             {
                 _context.Users.Update(user);
                 await _context.SaveChangesAsync();
             }
 
-            public async Task DeleteUserAsync(User user)
+            public async Task DeleteUserAsync(User user)                                            // მომხმარებლის წაშლა
             {
                 _context.Users.Remove(user);
                 await _context.SaveChangesAsync();
             }
 
-            public async Task DeleteUserByIdAsync(int userId)
+            public async Task DeleteUserByIdAsync(int userId)                                       // მომხმარებლის წაშლა ID-ის მიხედვით
             {
                 var user = await _context.Users.FindAsync(userId);
-                if (user == null) throw new KeyNotFoundException("User not found");
+                if (user == null) throw new KeyNotFoundException("User not found");                 
 
                 _context.Users.Remove(user);
                 await _context.SaveChangesAsync();
             }
 
-            public async Task PromoteUserAsync(int userId, string newRole)
+            public async Task PromoteUserAsync(int userId, string newRole)                          // მომხმარებლის როლის განახლება
             {
                 var user = await _context.Users.FindAsync(userId);
                 if (user == null) throw new KeyNotFoundException("User not found");
